@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:pacific_kode_practical/core/widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:pacific_kode_practical/core/widgets/custom_text_field.dart';
@@ -14,90 +13,82 @@ class JobDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
     final jobProvider = Provider.of<JobProvider>(context);
     return CustomScaffold(
       title: 'Job Details',
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              job.title ?? '',
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            Row(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.business,
-                  color: isDarkMode ? Colors.white70 : Colors.black54,
+                Text(
+                  job.title ?? '',
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(width: 6),
-                Text(job.company ?? 'Unknown Company'),
-                const SizedBox(width: 20),
-                Icon(
-                  Icons.location_on,
-                  color: isDarkMode ? Colors.white70 : Colors.black54,
+                const SizedBox(height: 8),
+
+                Row(
+                  children: [
+                    Icon(Icons.business),
+                    const SizedBox(width: 6),
+                    Text(job.company ?? 'Unknown Company'),
+                    const SizedBox(width: 20),
+                    Icon(Icons.location_on),
+                    const SizedBox(width: 6),
+                    Text(job.location ?? 'Unknown Location'),
+                  ],
                 ),
-                const SizedBox(width: 6),
-                Text(job.location ?? 'Unknown Location'),
+
+                const SizedBox(height: 16),
+
+                if (job.description != null && job.description!.isNotEmpty) ...[
+                  Text(
+                    'Job Description',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(job.description!),
+                  const SizedBox(height: 20),
+                ],
+
+                if (job.jobType != null) ...[
+                  Text(
+                    'Job Type: ${job.jobType}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+
+                if (job.salary != null) ...[
+                  Text(
+                    'Salary: ${job.salary}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showApplyDialog(context, jobProvider);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 14,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text('Apply Now'),
+                  ),
+                ),
               ],
             ),
-
-            const SizedBox(height: 16),
-
-            if (job.description != null && job.description!.isNotEmpty) ...[
-              Text(
-                'Job Description',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(job.description!),
-              const SizedBox(height: 20),
-            ],
-
-            if (job.jobType != null) ...[
-              Text(
-                'Job Type: ${job.jobType}',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-            ],
-
-            if (job.salary != null) ...[
-              Text(
-                'Salary: ${job.salary}',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-            ],
-
-            const Spacer(),
-
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  showApplyDialog(context, jobProvider);
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 14,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text('Apply Now'),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -150,33 +141,48 @@ class JobDetailsPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  Candidate candidate = Candidate(
-                    jobId: job.id ?? '0',
-                    candidateName: nameController.text.trim(),
-                    candidateEmail: emailController.text,
-                    candidatePhone: phoneController.text,
-                  );
-                  bool isExists = await jobProvider.saveJobApplication(
-                    candidate,
-                  );
-                  if (context.mounted) {
-                    if (isExists) {
+                  try {
+                    Candidate candidate = Candidate(
+                      jobId: job.id ?? '0',
+                      candidateName: nameController.text.trim(),
+                      candidateEmail: emailController.text,
+                      candidatePhone: phoneController.text,
+                    );
+                    bool isExists = await jobProvider.saveJobApplication(
+                      candidate,
+                    );
+                    if (context.mounted) {
+                      if (isExists) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'You have already applied to this position',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Application submitted!'),
+                          ),
+                        );
+                      }
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
-                            'You have already applied to this position',
-                            style: TextStyle(color: Colors.white),
+                            'QAn error occurred while saving details',
                           ),
-                          backgroundColor: Colors.red,
                         ),
                       );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Application submitted!')),
-                      );
                     }
+                  }
+                  if (context.mounted) {
                     Navigator.pop(context);
-
                   }
                 }
               },

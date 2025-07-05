@@ -11,33 +11,50 @@ class JobProvider with ChangeNotifier {
   final ApiService apiService = ApiService();
   late final LocalStorage database;
   List<Job> favouriteJobList = [];
+  List<Candidate> myJobList = [];
   Future<void> initDatabase() async {
-    database = await LocalStorage.getInstance();
-    Hive.registerAdapter(JobAdapter());
-    Hive.registerAdapter(CandidateAdapter());
-    await database.openBox<Job>(boxName: 'job_box', typeId: 1);
-    await database.openBox<Candidate>(boxName: 'candidate_box', typeId: 2);
+    try {
+      database = await LocalStorage.getInstance();
+      Hive.registerAdapter(JobAdapter());
+      Hive.registerAdapter(CandidateAdapter());
+      await database.openBox<Job>(boxName: 'job_box', typeId: 1);
+      await database.openBox<Candidate>(boxName: 'candidate_box', typeId: 2);
+    } catch (e) {
+      throw Exception('An error occurred while fetching data');
+    }
   }
 
   Future<bool> saveJobToDatabase(Job job) async {
-    final existingJobs = database.values<Job>('job_box');
-    final isAlreadySaved = existingJobs.any((j) => j.id == job.id);
-    if (!isAlreadySaved) {
-      await database.add(boxName: 'job_box', value: job);
+    try {
+      final existingJobs = database.values<Job>('job_box');
+      final isAlreadySaved = existingJobs.any((j) => j.id == job.id);
+      if (!isAlreadySaved) {
+        await database.add(boxName: 'job_box', value: job);
+      }
+      return isAlreadySaved;
+    } catch (e) {
+      throw Exception('An error occurred while fetching data');
     }
-    return isAlreadySaved;
   }
 
   void getJobFromDatabase() {
-    favouriteJobList = database.values<Job>('job_box');
+    try {
+      favouriteJobList = database.values<Job>('job_box');
 
-    notifyListeners();
+      notifyListeners();
+    } catch (e) {
+      throw Exception('An error occurred while fetching data');
+    }
   }
 
   void deleteDataFromDatabase(Job job) async {
-    await database.delete<Job>(boxName: 'job_box', value: job);
-    favouriteJobList.removeWhere((element) => element.id == job.id);
-    notifyListeners();
+    try {
+      await database.delete<Job>(boxName: 'job_box', value: job);
+      favouriteJobList.removeWhere((element) => element.id == job.id);
+      notifyListeners();
+    } catch (e) {
+      throw Exception('An error occurred while fetching data');
+    }
   }
 
   //this method fetches all the jobs from the api
@@ -73,16 +90,32 @@ class JobProvider with ChangeNotifier {
 
   //saving candidate details
   Future<bool> saveJobApplication(Candidate candidate) async {
-    final availableJobApplications = database.values<Candidate>(
-      'candidate_box',
-    );
-    final isAlreadySaved = availableJobApplications.any(
-      (can) => can.jobId == candidate.jobId,
-    );
-    if (!isAlreadySaved) {
-      await database.add(boxName: 'candidate_box', value: candidate);
-      notifyListeners();
+    bool isAlreadySaved = false;
+    try {
+      final availableJobApplications = database.values<Candidate>(
+        'candidate_box',
+      );
+      isAlreadySaved = availableJobApplications.any(
+        (can) => can.jobId == candidate.jobId,
+      );
+      if (!isAlreadySaved) {
+        await database.add(boxName: 'candidate_box', value: candidate);
+        notifyListeners();
+      }
+    } catch (e) {
+      throw Exception('An error occurred while fetching data');
     }
+
     return isAlreadySaved;
+  }
+
+  void getAppliedJobsFromDatabase() {
+    try {
+      myJobList = database.values<Candidate>('candidate_box');
+
+      notifyListeners();
+    } catch (e) {
+      throw Exception('An error occurred while fetching data');
+    }
   }
 }

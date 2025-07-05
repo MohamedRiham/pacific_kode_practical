@@ -1,4 +1,6 @@
+import 'package:pacific_kode_practical/core/services/navigation.dart';
 import 'package:pacific_kode_practical/core/widgets/search_bar.dart';
+import 'package:pacific_kode_practical/presentation/screens/applied_jobs_page.dart';
 import 'package:pacific_kode_practical/presentation/screens/favourite_jobs_page.dart';
 import 'package:pacific_kode_practical/presentation/screens/job_details_page.dart';
 import 'package:provider/provider.dart';
@@ -55,76 +57,95 @@ class _JobListPageState extends State<JobListPage> {
     jobProvider = Provider.of<JobProvider>(context);
     return CustomScaffold(
       title: 'Job Listings',
-      body: Column(
-        children: [
-          SearchBox(
-            hiddenText: 'Search',
-            search: (text) {
-              jobProvider.searchJobs(text);
-            },
-            onChange: (text) {
-              if (text.isEmpty) {
+      body: SafeArea(
+        child: Column(
+          children: [
+            SearchBox(
+              hiddenText: 'Search',
+              search: (text) {
                 jobProvider.searchJobs(text);
-              }
-            },
-          ),
-
-          Expanded(
-            child: Consumer<JobProvider>(
-              builder: (context, jobProvider, _) {
-                return _isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : jobProvider.filteredJobList.isEmpty
-                    ? Center(child: Text('No Jobs Available'))
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: jobProvider.filteredJobList.length,
-                        itemBuilder: (context, index) {
-                          final job = jobProvider.filteredJobList[index];
-                          return JobCard(
-                            job: job,
-                            navigation: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      JobDetailsPage(job: job),
-                                ),
-                              );
-                            },
-                            onFavourite: () async {
-                              bool alreadySaved = await jobProvider
-                                  .saveJobToDatabase(job);
-                              if (context.mounted) {
-                                if (alreadySaved) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Job is already in favourites',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Job added to favourite list',
-                                      ),
-                                      backgroundColor: Colors.white,
-                                    ),
-                                  );
-                                }
-                              }
-                            },
-                          );
-                        },
-                      );
+              },
+              onChange: (text) {
+                if (text.isEmpty) {
+                  jobProvider.searchJobs(text);
+                }
               },
             ),
-          ),
-        ],
+
+            Expanded(
+              child: Consumer<JobProvider>(
+                builder: (context, jobProvider, _) {
+                  return _isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : jobProvider.filteredJobList.isEmpty
+                      ? Center(child: Text('No Jobs Available'))
+                      : ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: jobProvider.filteredJobList.length,
+                          itemBuilder: (context, index) {
+                            final job = jobProvider.filteredJobList[index];
+                            return JobCard(
+                              job: job,
+                              navigation: () {
+                                Navigator.of(context).push(
+                                  createSlideRoute(
+                                    page: JobDetailsPage(job: job),
+                                    beginOffset: const Offset(1.0, 0.0),
+                                  ),
+                                );
+                              },
+                              onFavourite: () async {
+                                try {
+                                  bool alreadySaved = await jobProvider
+                                      .saveJobToDatabase(job);
+                                  if (context.mounted) {
+                                    if (alreadySaved) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Job is already in favourites',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Job added to favourite list',
+                                          ),
+                                          backgroundColor: Colors.white,
+                                        ),
+                                      );
+                                    }
+                                  }
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'An error occurred while saving',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
+                            );
+                          },
+                        );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
       botumNavigation: BottomNavigationBar(
         currentIndex: 0,
@@ -134,6 +155,11 @@ class _JobListPageState extends State<JobListPage> {
               context,
               MaterialPageRoute(builder: (context) => FavouriteJobsPage()),
             );
+          } else if (index == 2) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => AppliedJobsPage()),
+            );
           }
         },
         items: const [
@@ -141,6 +167,10 @@ class _JobListPageState extends State<JobListPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'Favourite Jobs',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assignment),
+            label: 'My Jobs',
           ),
         ],
       ),
@@ -236,7 +266,13 @@ class JobCard extends StatelessWidget {
                 ],
               ),
               const Divider(thickness: 5.0),
-              Center(child: Text(job.description ?? '')),
+              Center(
+                child: Text(
+                  (job.description?.length ?? 0) > 20
+                      ? '${job.description!.substring(0, 20)}...'
+                      : job.description ?? '',
+                ),
+              ),
             ],
           ),
         ),
