@@ -16,12 +16,14 @@ dependencies:
   http:
   shared_preferences:
   provider:
+  hive_local_storage:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  build_runner:
   flutter_lints: ^5.0.0
+  hive_generator:
 
 flutter:
 

@@ -1,7 +1,11 @@
+import 'package:flutter/services.dart';
 import 'package:pacific_kode_practical/core/widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:pacific_kode_practical/core/widgets/custom_text_field.dart';
+import 'package:pacific_kode_practical/domain/models/candidate.dart';
 import 'package:pacific_kode_practical/domain/models/jobs.dart';
 import 'package:pacific_kode_practical/presentation/provider/job_provider.dart';
+import 'package:provider/provider.dart';
 
 class JobDetailsPage extends StatelessWidget {
   final Job job;
@@ -12,7 +16,7 @@ class JobDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
-
+    final jobProvider = Provider.of<JobProvider>(context);
     return CustomScaffold(
       title: 'Job Details',
       body: Padding(
@@ -79,9 +83,7 @@ class JobDetailsPage extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Apply button pressed!')),
-                  );
+                  showApplyDialog(context, jobProvider);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
@@ -98,6 +100,91 @@ class JobDetailsPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void showApplyDialog(BuildContext context, JobProvider jobProvider) {
+    final formKey = GlobalKey<FormState>();
+    final nameController = TextEditingController();
+    final emailController = TextEditingController();
+    final phoneController = TextEditingController();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Apply for Job'),
+          content: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomTextField(
+                  controller: nameController,
+                  keyboardType: TextInputType.name,
+                  hintText: 'Enter your name',
+                  icon: Icons.person,
+                ),
+
+                CustomTextField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  hintText: 'Enter your email',
+                  icon: Icons.email,
+                ),
+                CustomTextField(
+                  controller: phoneController,
+                  keyboardType: TextInputType.phone,
+                  hintText: 'Enter your phone number',
+                  icon: Icons.phone,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  Candidate candidate = Candidate(
+                    jobId: job.id ?? '0',
+                    candidateName: nameController.text.trim(),
+                    candidateEmail: emailController.text,
+                    candidatePhone: phoneController.text,
+                  );
+                  bool isExists = await jobProvider.saveJobApplication(
+                    candidate,
+                  );
+                  if (context.mounted) {
+                    if (isExists) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'You have already applied to this position',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Application submitted!')),
+                      );
+                    }
+                    Navigator.pop(context);
+
+                  }
+                }
+              },
+              child: const Text('Apply'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:pacific_kode_practical/core/widgets/search_bar.dart';
+import 'package:pacific_kode_practical/presentation/screens/favourite_jobs_page.dart';
 import 'package:pacific_kode_practical/presentation/screens/job_details_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,6 @@ class _JobListPageState extends State<JobListPage> {
       body: Column(
         children: [
           SearchBox(
-            height: 50.0,
             hiddenText: 'Search',
             search: (text) {
               jobProvider.searchJobs(text);
@@ -80,17 +80,43 @@ class _JobListPageState extends State<JobListPage> {
                         padding: const EdgeInsets.all(16),
                         itemCount: jobProvider.filteredJobList.length,
                         itemBuilder: (context, index) {
+                          final job = jobProvider.filteredJobList[index];
                           return JobCard(
-                            job: jobProvider.filteredJobList[index],
+                            job: job,
                             navigation: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => JobDetailsPage(
-                                    job: jobProvider.filteredJobList[index],
-                                  ),
+                                  builder: (context) =>
+                                      JobDetailsPage(job: job),
                                 ),
                               );
+                            },
+                            onFavourite: () async {
+                              bool alreadySaved = await jobProvider
+                                  .saveJobToDatabase(job);
+                              if (context.mounted) {
+                                if (alreadySaved) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Job is already in favourites',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Job added to favourite list',
+                                      ),
+                                      backgroundColor: Colors.white,
+                                    ),
+                                  );
+                                }
+                              }
                             },
                           );
                         },
@@ -103,7 +129,12 @@ class _JobListPageState extends State<JobListPage> {
       botumNavigation: BottomNavigationBar(
         currentIndex: 0,
         onTap: (index) {
-          if (index == 1) {}
+          if (index == 1) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => FavouriteJobsPage()),
+            );
+          }
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Jobs'),
@@ -112,8 +143,6 @@ class _JobListPageState extends State<JobListPage> {
             label: 'Favourite Jobs',
           ),
         ],
-        selectedItemColor: const Color(0xFFFFC40A),
-        unselectedItemColor: Colors.black,
       ),
     );
   }
@@ -122,12 +151,16 @@ class _JobListPageState extends State<JobListPage> {
 class JobCard extends StatelessWidget {
   final Job job;
   final VoidCallback navigation;
-  const JobCard({super.key, required this.job, required this.navigation});
+  final VoidCallback onFavourite;
+  const JobCard({
+    super.key,
+    required this.job,
+    required this.navigation,
+    required this.onFavourite,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return InkWell(
       onTap: navigation,
 
@@ -140,13 +173,20 @@ class JobCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: Text(
-                  job.title ?? '__',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      job.title ?? '__',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
+                  IconButton(
+                    icon: const Icon(Icons.favorite_border),
+                    onPressed: onFavourite,
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               Row(
@@ -195,7 +235,7 @@ class JobCard extends StatelessWidget {
                   Text(job.jobType ?? 'N/A'),
                 ],
               ),
-              const Divider(color: Colors.white, thickness: 5.0),
+              const Divider(thickness: 5.0),
               Center(child: Text(job.description ?? '')),
             ],
           ),

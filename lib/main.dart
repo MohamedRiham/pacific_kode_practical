@@ -12,7 +12,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => JobProvider()),
+        ChangeNotifierProvider(create: (_) => JobProvider()..initDatabase()),
       ],
       child: const MyApp(),
     ),
@@ -30,10 +30,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pacific Kode Practical',
       navigatorKey: navigatorKey,
+
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeProvider.currentTheme,
       debugShowCheckedModeBanner: false,
+
       home: const JobListPage(),
     );
   }

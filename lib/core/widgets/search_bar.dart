@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
 class SearchBox extends StatelessWidget {
-  final double height;
   final String hiddenText;
   final Function(String) search;
   final Function(String) onChange;
   const SearchBox({
     super.key,
-    required this.height,
     required this.hiddenText,
     required this.search,
 
@@ -16,14 +14,7 @@ class SearchBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: height,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Row(
+    return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -34,7 +25,6 @@ class SearchBox extends StatelessWidget {
               onSubmitted: search,
               decoration: InputDecoration(
                 hintText: hiddenText,
-                hintStyle: TextStyle(color: Colors.black),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
                   vertical: 12.0,
@@ -45,7 +35,7 @@ class SearchBox extends StatelessWidget {
             ),
           ),
         ],
-      ),
+      
     );
   }
 }
