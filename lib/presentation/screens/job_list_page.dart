@@ -212,9 +212,15 @@ class JobCard extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.favorite_border),
-                    onPressed: onFavourite,
+                  Semantics(
+                    label: 'Add to favourites',
+                    excludeSemantics: true,
+                    container: true,
+                    button: true,
+                    child: IconButton(
+                      icon: const Icon(Icons.favorite_border),
+                      onPressed: onFavourite,
+                    ),
                   ),
                 ],
               ),

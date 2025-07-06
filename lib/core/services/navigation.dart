@@ -1,3 +1,5 @@
+// this is used to navigate between pages with animations
+
 import 'package:flutter/material.dart';
 
 Route createSlideRoute({required Widget page, required Offset beginOffset}) {

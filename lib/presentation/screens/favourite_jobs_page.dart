@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:pacific_kode_practical/core/services/dialog_service.dart';
 import 'package:pacific_kode_practical/core/widgets/custom_scaffold.dart';
 import 'package:pacific_kode_practical/presentation/provider/job_provider.dart';
@@ -99,38 +100,45 @@ class _FavouriteJobsPageState extends State<FavouriteJobsPage> {
                               const SizedBox(height: 12),
                               Align(
                                 alignment: Alignment.centerRight,
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () async {
-                                    await showMessageDialog(
-                                      message:
-                                          'Are you sure to delete this item?',
-                                      titleText: 'Warning',
-                                      yesFunction: () {
-                                        try {
-                                          jobProvider.deleteDataFromDatabase(
-                                            job,
-                                          );
-                                        } catch (e) {
-                                          if (context.mounted) {
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                  'An error occurred while deleting data',
-                                                ),
-                                              ),
+
+                                child: Semantics(
+                                  label: 'Delete',
+                                  button: true,
+                                  container: true,
+                                  excludeSemantics: true,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                    onPressed: () async {
+                                      await showMessageDialog(
+                                        message:
+                                            'Are you sure you want to delete this item?',
+                                        titleText: 'Warning',
+                                        yesFunction: () {
+                                          try {
+                                            jobProvider.deleteDataFromDatabase(
+                                              job,
                                             );
+                                          } catch (e) {
+                                            if (context.mounted) {
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                    'An error occurred while deleting data',
+                                                  ),
+                                                ),
+                                              );
+                                            }
                                           }
-                                        }
-                                        Navigator.pop(context);
-                                      },
-                                    );
-                                  },
+                                          Navigator.pop(context);
+                                        },
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ],

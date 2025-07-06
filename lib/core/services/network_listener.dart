@@ -1,3 +1,7 @@
+/* This monitors whether the device has an active internet connection.
+ If there is no connection, the user is automatically redirected to a page
+ where they cannot interact with the app until the connection is restored.*/
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:pacific_kode_practical/core/widgets/no_internet.dart';
