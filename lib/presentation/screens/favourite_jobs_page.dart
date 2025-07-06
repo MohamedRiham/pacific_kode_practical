@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:pacific_kode_practical/core/services/dialog_service.dart';
 import 'package:pacific_kode_practical/core/widgets/custom_scaffold.dart';
 import 'package:pacific_kode_practical/presentation/provider/job_provider.dart';
@@ -85,9 +84,11 @@ class _FavouriteJobsPageState extends State<FavouriteJobsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                job.title ?? 'No Title',
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.bold),
+                                job.title ?? '',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
                               ),
                               const SizedBox(height: 8),
                               Text('Company: ${job.company ?? 'N/A'}'),
@@ -96,7 +97,19 @@ class _FavouriteJobsPageState extends State<FavouriteJobsPage> {
                               if (job.salary != null)
                                 Text('Salary: ${job.salary}'),
                               const SizedBox(height: 8),
+                              Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'Job Description',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
                               Text(job.description ?? ''),
+
                               const SizedBox(height: 12),
                               Align(
                                 alignment: Alignment.centerRight,

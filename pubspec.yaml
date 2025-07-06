@@ -1,5 +1,5 @@
 name: pacific_kode_practical
-description: "A new Flutter project."
+description: "allows users to view jobs and apply."
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -17,6 +17,7 @@ dependencies:
   shared_preferences:
   provider:
   hive_local_storage:
+  email_validator:
 
 dev_dependencies:
   flutter_test:

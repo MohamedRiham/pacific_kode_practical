@@ -1,3 +1,5 @@
+import 'package:email_validator/email_validator.dart';
+
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -10,7 +12,7 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     required this.hintText,
     required this.icon,
-required     this.keyboardType,
+    required this.keyboardType,
   });
 
   @override
@@ -18,8 +20,20 @@ required     this.keyboardType,
     return TextFormField(
       keyboardType: keyboardType,
       controller: controller,
-      validator: (value) =>
-          value!.isEmpty ? 'This field cannot be empty' : null,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'This field cannot be empty';
+        }
+        if (keyboardType == TextInputType.emailAddress &&
+            !EmailValidator.validate(value)) {
+          return 'Enter a valid email address';
+        }
+        if (keyboardType == TextInputType.phone &&
+            !RegExp(r'^(?:\+94|0)?7\d{8}$').hasMatch(value)) {
+          return 'Enter a valid Sri Lankan phone number';
+        }
+        return null;
+      },
       decoration: InputDecoration(
         border: InputBorder.none,
         contentPadding: const EdgeInsets.only(top: 14),

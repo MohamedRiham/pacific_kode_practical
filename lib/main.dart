@@ -8,6 +8,7 @@ import 'package:pacific_kode_practical/core/services/network_listener.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() {
+
   runApp(
     MultiProvider(
       providers: [
@@ -16,8 +17,10 @@ void main() {
       ],
       child: const MyApp(),
     ),
+
   );
   NetworkListener().checkInternet();
+
 }
 
 class MyApp extends StatelessWidget {

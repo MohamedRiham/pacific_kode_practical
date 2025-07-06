@@ -1,3 +1,5 @@
+// The app will automatically redirect to this page if the internet connection is lost.
+
 import 'package:flutter/material.dart';
 
 class NoInternetPage extends StatelessWidget {
@@ -21,10 +23,7 @@ class NoInternetPage extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: onRetry,
-                child: Text("Retry"),
-              ),
+              ElevatedButton(onPressed: onRetry, child: Text("Retry")),
             ],
           ),
         ),
