@@ -5,12 +5,14 @@ import 'package:pacific_kode_practical/core/themes/provider/theme_provider.dart'
 class CustomScaffold extends StatelessWidget {
   final String title;
   final Widget body;
-  final Widget? botumNavigation;
+  final Widget? bottomNavigation;
+  final Widget? floatingButton;
   const CustomScaffold({
     super.key,
     required this.title,
     required this.body,
-    this.botumNavigation,
+    this.bottomNavigation,
+    this.floatingButton,
   });
 
   @override
@@ -36,7 +38,8 @@ class CustomScaffold extends StatelessWidget {
         ],
       ),
       body: body,
-      bottomNavigationBar: botumNavigation,
+      bottomNavigationBar: bottomNavigation,
+      floatingActionButton: floatingButton,
     );
   }
 }

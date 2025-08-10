@@ -41,3 +41,25 @@ class Job extends HiveObject {
     );
   }
 }
+
+class AddJob extends Job {
+  AddJob({
+    super.title,
+    super.company,
+    super.location,
+    super.salary,
+    super.description,
+    super.jobType,
+  });
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['title'] = super.title;
+    map['company'] = super.company;
+    map['location'] = super.location;
+    map['salary'] = super.salary;
+    map['job_type'] = super.jobType;
+    map['description'] = super.description;
+    return map;
+  }
+}

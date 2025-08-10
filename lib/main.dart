@@ -1,3 +1,4 @@
+import 'package:pacific_kode_practical/core/widgets/custom_bottom_navigator.dart';
 import 'package:pacific_kode_practical/presentation/provider/job_provider.dart';
 import 'package:pacific_kode_practical/presentation/screens/job_list_page.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import 'package:pacific_kode_practical/core/services/network_listener.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() {
-
   runApp(
     MultiProvider(
       providers: [
@@ -17,10 +17,8 @@ void main() {
       ],
       child: const MyApp(),
     ),
-
   );
   NetworkListener().checkInternet();
-
 }
 
 class MyApp extends StatelessWidget {
@@ -39,7 +37,7 @@ class MyApp extends StatelessWidget {
       themeMode: themeProvider.currentTheme,
       debugShowCheckedModeBanner: false,
 
-      home: const JobListPage(),
+      home: const CustomBottomNavigator(),
     );
   }
 }

@@ -1,3 +1,6 @@
+import 'package:pacific_kode_practical/core/widgets/custom_text_field.dart';
+import 'package:pacific_kode_practical/domain/models/jobs.dart';
+import 'package:pacific_kode_practical/presentation/custom_widgets/job_card.dart';
 import 'package:pacific_kode_practical/core/services/navigation.dart';
 import 'package:pacific_kode_practical/core/widgets/search_bar.dart';
 import 'package:pacific_kode_practical/presentation/screens/applied_jobs_page.dart';
@@ -7,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:pacific_kode_practical/core/widgets/custom_scaffold.dart';
 import 'package:pacific_kode_practical/presentation/provider/job_provider.dart';
-import 'package:pacific_kode_practical/domain/models/jobs.dart';
 
 class JobListPage extends StatefulWidget {
   const JobListPage({super.key});
@@ -72,7 +74,8 @@ class _JobListPageState extends State<JobListPage> {
               },
             ),
 
-            Expanded(
+            SizedBox(
+              height: 400,
               child: Consumer<JobProvider>(
                 builder: (context, jobProvider, _) {
                   return _isLoading
@@ -147,142 +150,117 @@ class _JobListPageState extends State<JobListPage> {
           ],
         ),
       ),
-      botumNavigation: BottomNavigationBar(
-        currentIndex: 0,
-        onTap: (index) {
-          if (index == 1) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => FavouriteJobsPage()),
-            );
-          } else if (index == 2) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => AppliedJobsPage()),
-            );
-          }
+
+      floatingButton: IconButton(
+        onPressed: () {
+          _showAddJobDialog();
         },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Jobs'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favourite Jobs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'My Jobs',
-          ),
-        ],
+        icon: Icon(Icons.add),
       ),
     );
   }
-}
 
-class JobCard extends StatelessWidget {
-  final Job job;
-  final VoidCallback navigation;
-  final VoidCallback onFavourite;
-  const JobCard({
-    super.key,
-    required this.job,
-    required this.navigation,
-    required this.onFavourite,
-  });
+  void _showAddJobDialog() {
+    final formKey = GlobalKey<FormState>();
 
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: navigation,
+    final titleController = TextEditingController();
+    final companyController = TextEditingController();
+    final locationController = TextEditingController();
+    final salaryController = TextEditingController();
+    final jobTypeController = TextEditingController();
+    final descriptionController = TextEditingController();
 
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.only(bottom: 16),
-        elevation: 3,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Add Job"),
+          content: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: Text(
-                      job.title ?? '__',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                  CustomTextField(
+                    controller: titleController,
+                    hintText: 'Title',
+                    icon: Icons.title,
+                    keyboardType: TextInputType.text,
                   ),
-                  Semantics(
-                    label: 'Add to favourites',
-                    excludeSemantics: true,
-                    container: true,
-                    button: true,
-                    child: IconButton(
-                      icon: const Icon(Icons.favorite_border),
-                      onPressed: onFavourite,
-                    ),
+                  CustomTextField(
+                    controller: companyController,
+                    hintText: 'Company',
+                    icon: Icons.place,
+                    keyboardType: TextInputType.text,
+                  ),
+                  CustomTextField(
+                    controller: locationController,
+                    hintText: 'Location',
+                    icon: Icons.location_on,
+                    keyboardType: TextInputType.text,
+                  ),
+                  CustomTextField(
+                    controller: salaryController,
+                    hintText: 'Salary',
+                    icon: Icons.money,
+                    keyboardType: TextInputType.number,
+                  ),
+                  CustomTextField(
+                    controller: jobTypeController,
+                    hintText: 'Job Type',
+                    icon: Icons.work,
+                    keyboardType: TextInputType.text,
+                  ),
+                  CustomTextField(
+                    controller: descriptionController,
+                    hintText: 'Description',
+                    icon: Icons.description,
+                    keyboardType: TextInputType.text,
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.business, size: 16),
-                      const SizedBox(width: 2),
-                      const Text('Company'),
-                    ],
-                  ),
-                  const SizedBox(width: 6),
-                  Text(job.company ?? 'N/A'),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on, size: 16),
-                      const SizedBox(width: 2),
-
-                      const Text('Location'),
-                    ],
-                  ),
-                  const SizedBox(width: 6),
-                  Text(job.location ?? 'N/A'),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.work, size: 16),
-                      const SizedBox(width: 2),
-
-                      const Text('Job Type'),
-                    ],
-                  ),
-                  const SizedBox(width: 6),
-                  Text(job.jobType ?? 'N/A'),
-                ],
-              ),
-              const Divider(thickness: 5.0),
-              Center(
-                child: Text(
-                  (job.description?.length ?? 0) > 20
-                      ? '${job.description!.substring(0, 20)}...'
-                      : job.description ?? '',
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  try {
+                    AddJob addJob = AddJob(
+                      title: titleController.text,
+                      company: companyController.text,
+                      location: locationController.text,
+                      salary: salaryController.text,
+                      jobType: jobTypeController.text,
+                      description: descriptionController.text,
+                    );
+                    await jobProvider.addJob(addJob);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'QAn error occurred while saving details',
+                          ),
+                        ),
+                      );
+                    }
+                  }
+                }
+              },
+              child: const Text("Save"),
+            ),
+          ],
+        );
+      },
     );
   }
 }

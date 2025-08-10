@@ -22,4 +22,27 @@ class ApiService {
       throw Exception("An unexpected error occurred: $error");
     }
   }
+
+  Future<dynamic> postRequest({
+    required String url,
+    required Map<String, dynamic> body,
+  }) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse(url),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(body),
+          )
+          .timeout(const Duration(seconds: 60));
+
+      return jsonDecode(response.body);
+    } on TimeoutException {
+      throw Exception("Request Timeout: The server took too long to respond.");
+    } on http.ClientException catch (e) {
+      throw Exception("Client Exception: ${e.message}");
+    } catch (error) {
+      throw Exception("An unexpected error occurred: $error");
+    }
+  }
 }

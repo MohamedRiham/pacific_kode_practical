@@ -35,33 +35,7 @@ class _FavouriteJobsPageState extends State<FavouriteJobsPage> {
     return CustomScaffold(
       title: 'Favourite Jobs',
 
-      botumNavigation: BottomNavigationBar(
-        currentIndex: 1,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => JobListPage()),
-            );
-          } else if (index == 2) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => AppliedJobsPage()),
-            );
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Jobs'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favourite Jobs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'My Jobs',
-          ),
-        ],
-      ),
+
       body: SafeArea(
         child: Consumer<JobProvider>(
           builder: (context, jobProvider, _) {

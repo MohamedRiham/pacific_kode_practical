@@ -118,4 +118,16 @@ class JobProvider with ChangeNotifier {
       throw Exception('An error occurred while fetching data');
     }
   }
+
+  Future<void> addJob(AddJob job) async {
+    try {
+      await apiService.postRequest(
+        url: '${ApiConstants.baseUrl}/jobs',
+        body: job.toJson(),
+      );
+    } catch (e) {
+      throw Exception('An unexpected error occurred');
+    }
+    notifyListeners();
+  }
 }
