@@ -1,3 +1,4 @@
+import 'package:pacific_kode_practical/core/widgets/custom_dropdown.dart';
 import 'package:pacific_kode_practical/core/widgets/custom_text_field.dart';
 import 'package:pacific_kode_practical/domain/models/jobs.dart';
 import 'package:pacific_kode_practical/presentation/custom_widgets/job_card.dart';
@@ -21,7 +22,9 @@ class JobListPage extends StatefulWidget {
 class _JobListPageState extends State<JobListPage> {
   bool _isLoading = false;
   late JobProvider jobProvider;
-
+  String? selectedJobType;
+  String? selectedSalary;
+  String? selectedLocation;
   Future<void> loadJobs() async {
     try {
       setState(() {
@@ -72,6 +75,52 @@ class _JobListPageState extends State<JobListPage> {
                   jobProvider.searchJobs(text);
                 }
               },
+            ),
+            SizedBox(height: 10.0),
+
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomDropdown(
+                  hintLabel: 'Salary',
+                  value: selectedSalary,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedSalary = newValue;
+
+                      jobProvider.sortSalary(newValue!);
+                    });
+                  },
+                  items: ['All', '30000', '80000'],
+                ),
+                SizedBox(width: 5.0),
+
+                CustomDropdown(
+                  hintLabel: 'Job Type',
+                  value: selectedJobType,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedJobType = newValue;
+                      jobProvider.sortJobType(newValue!);
+                    });
+                  },
+                  items: ['All', 'Intern', 'Associate', 'Senior'],
+                ),
+
+                SizedBox(width: 5.0),
+
+                CustomDropdown(
+                  hintLabel: 'Location',
+                  value: selectedLocation,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedLocation = newValue;
+                      jobProvider.sortLocation(newValue!);
+                    });
+                  },
+                  items: ['All', 'Colombo', 'Jafna', 'Athurugiriya'],
+                ),
+              ],
             ),
 
             SizedBox(
@@ -147,15 +196,17 @@ class _JobListPageState extends State<JobListPage> {
                 },
               ),
             ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                onPressed: () {
+                  _showAddJobDialog();
+                },
+                icon: Icon(Icons.add),
+              ),
+            ),
           ],
         ),
-      ),
-
-      floatingButton: IconButton(
-        onPressed: () {
-          _showAddJobDialog();
-        },
-        icon: Icon(Icons.add),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:pacific_kode_practical/domain/models/job_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_local_storage/hive_local_storage.dart';
 import 'package:pacific_kode_practical/data/api_service/api_constants.dart';
@@ -12,6 +13,11 @@ class JobProvider with ChangeNotifier {
   late final LocalStorage database;
   List<Job> favouriteJobList = [];
   List<Candidate> myJobList = [];
+
+  String selectedSalary = 'All';
+  String selectedJobType = 'All';
+  String selectedLocation = 'All';
+
   Future<void> initDatabase() async {
     try {
       database = await LocalStorage.getInstance();
@@ -63,7 +69,7 @@ class JobProvider with ChangeNotifier {
       var response = await apiService.getRequest(
         url: '${ApiConstants.baseUrl}/jobs',
       );
-      jobList = response.map<Job>((json) => Job.fromJson(json)).toList();
+      jobList = response.map<Job>((json) => Job().fromJson(json)).toList();
       filteredJobList = jobList;
     } catch (e) {
       throw Exception('An unexpected error occurred');
@@ -128,6 +134,49 @@ class JobProvider with ChangeNotifier {
     } catch (e) {
       throw Exception('An unexpected error occurred');
     }
+    notifyListeners();
+  }
+
+  void sortSalary(String value) {
+    selectedSalary = value;
+    applyFilters();
+  }
+
+  void sortJobType(String value) {
+    selectedJobType = value;
+    applyFilters();
+  }
+
+  void sortLocation(String value) {
+    selectedLocation = value;
+    applyFilters();
+  }
+
+  void applyFilters() {
+    List<Job> tempList = jobList;
+
+    if (selectedSalary != 'All') {
+      final int? threshold = int.tryParse(selectedSalary);
+      if (threshold != null) {
+        SalaryFilter salaryFilter = SalaryFilter(salary: threshold);
+        tempList = salaryFilter.filter(tempList);
+      }
+    }
+
+    if (selectedJobType != 'All') {
+      JobTypeFilter jobTypeFilter = JobTypeFilter(
+        selectedJobType.toLowerCase(),
+      );
+      tempList = jobTypeFilter.filter(tempList);
+    }
+    if (selectedLocation != 'All') {
+      LocationFilter locationFilter = LocationFilter(
+        selectedLocation.toLowerCase(),
+      );
+
+      tempList = locationFilter.filter(tempList);
+    }
+    filteredJobList = tempList;
     notifyListeners();
   }
 }

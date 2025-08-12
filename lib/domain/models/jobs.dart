@@ -2,8 +2,16 @@ import 'package:hive_local_storage/hive_local_storage.dart';
 
 part 'jobs.g.dart';
 
+abstract class Career {
+  Career fromJson(Map<String, dynamic> json);
+
+  Map<String, dynamic> toJson();
+
+  void convertSalary();
+}
+
 @HiveType(typeId: 1, adapterName: 'JobAdapter')
-class Job extends HiveObject {
+class Job extends HiveObject implements Career {
   @HiveField(0)
   final String? id;
   @HiveField(1)
@@ -18,7 +26,7 @@ class Job extends HiveObject {
   final String? jobType;
   @HiveField(6)
   final String? description;
-
+  int? numericSalary;
   Job({
     this.id,
     this.title,
@@ -27,9 +35,12 @@ class Job extends HiveObject {
     this.salary,
     this.jobType,
     this.description,
-  });
+  }) {
+    convertSalary();
+  }
 
-  factory Job.fromJson(Map<String, dynamic> json) {
+  @override
+  Job fromJson(Map<String, dynamic> json) {
     return Job(
       id: json['id'],
       title: json['title'],
@@ -39,6 +50,20 @@ class Job extends HiveObject {
       jobType: json['job_type'],
       description: json['description'],
     );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['key_name'] = 'value';
+    return map;
+  }
+
+  @override
+  void convertSalary() {
+    if (salary != null) {
+      numericSalary = int.parse(salary!.replaceAll(RegExp(r'[^0-9]'), ''));
+    }
   }
 }
 
@@ -52,6 +77,7 @@ class AddJob extends Job {
     super.jobType,
   });
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['title'] = super.title;
