@@ -15,6 +15,7 @@ class JobDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final jobProvider = Provider.of<JobProvider>(context);
     return CustomScaffold(
+      needSideDraw: true,
       title: 'Job Details',
       body: SafeArea(
         child: SingleChildScrollView(

@@ -1,6 +1,7 @@
+import 'package:get/get.dart';
 import 'package:pacific_kode_practical/core/widgets/custom_bottom_navigator.dart';
+import 'package:pacific_kode_practical/presentation/getx/user_getx.dart';
 import 'package:pacific_kode_practical/presentation/provider/job_provider.dart';
-import 'package:pacific_kode_practical/presentation/screens/job_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pacific_kode_practical/core/themes/provider/theme_provider.dart';
@@ -9,6 +10,10 @@ import 'package:pacific_kode_practical/core/services/network_listener.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+ Get.put(UserGetX());
+
+
   runApp(
     MultiProvider(
       providers: [
@@ -29,6 +34,7 @@ class MyApp extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return MaterialApp(
+      restorationScopeId: 'R1',
       title: 'Pacific Kode Practical',
       navigatorKey: navigatorKey,
 

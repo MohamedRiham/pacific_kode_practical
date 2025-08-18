@@ -33,6 +33,7 @@ class _FavouriteJobsPageState extends State<FavouriteJobsPage> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
+      needSideDraw: true,
       title: 'Favourite Jobs',
 
 

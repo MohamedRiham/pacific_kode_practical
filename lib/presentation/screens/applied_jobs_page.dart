@@ -36,6 +36,7 @@ class _AppliedJobsPageState extends State<AppliedJobsPage> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
+      needSideDraw: true,
       title: 'My Jobs',
       body: SafeArea(
         child: Consumer<JobProvider>(

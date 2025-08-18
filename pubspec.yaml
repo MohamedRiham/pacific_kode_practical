@@ -18,7 +18,7 @@ dependencies:
   provider:
   hive_local_storage:
   email_validator:
-
+  get:
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -30,3 +30,5 @@ flutter:
 
   uses-material-design: true
 
+  assets:
+    - assets/images/

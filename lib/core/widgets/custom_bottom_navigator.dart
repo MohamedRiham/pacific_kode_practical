@@ -11,14 +11,14 @@ class CustomBottomNavigator extends StatefulWidget {
 }
 
 class _CustomBottomNavigator extends State<CustomBottomNavigator>
-    with TickerProviderStateMixin {
-  late TabController tabController;
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
 
-    tabController = TabController(initialIndex: 0, length: 3, vsync: this);
+    _tabController = TabController(initialIndex: 0, length: 3, vsync: this);
   }
 
   @override
@@ -28,7 +28,7 @@ class _CustomBottomNavigator extends State<CustomBottomNavigator>
         fit: StackFit.expand,
         children: [
           TabBarView(
-            controller: tabController,
+            controller: _tabController,
             children: [JobListPage(), FavouriteJobsPage(), AppliedJobsPage()],
           ),
 
@@ -36,7 +36,7 @@ class _CustomBottomNavigator extends State<CustomBottomNavigator>
             alignment: Alignment.bottomCenter,
 
             child: TabBar(
-              controller: tabController,
+              controller: _tabController,
               indicatorColor: Colors.green,
               labelColor: Colors.green,
               unselectedLabelColor: Colors.grey,
@@ -50,5 +50,11 @@ class _CustomBottomNavigator extends State<CustomBottomNavigator>
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 }
