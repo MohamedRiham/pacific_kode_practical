@@ -9,70 +9,69 @@ class SideDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return                             Obx(
-            () => Drawer(
-      child: Stack(
-        children: <Widget>[
-          Column(
-            children: <Widget>[
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: <Widget>[
-                    DrawerHeader(
-                      decoration: const BoxDecoration(
-                        color: Colors.transparent,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const CircleAvatar(
-                              radius: 40.0,
-                              backgroundColor: Colors.white,
-                              backgroundImage: AssetImage(
-                                'assets/images/User Avatar.png',
+    return Obx(
+      () => Drawer(
+        child: Stack(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: <Widget>[
+                      DrawerHeader(
+                        decoration: const BoxDecoration(
+                          color: Colors.transparent,
+                        ),
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              const CircleAvatar(
+                                radius: 40.0,
+                                backgroundColor: Colors.white,
+                                backgroundImage: AssetImage(
+                                  'assets/images/User Avatar.png',
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8),
+                              const SizedBox(height: 8),
 
- Text(
+                              /*
+                              Text(
                                 userController.userProfile.value.name,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16.0,
                                 ),
                               ),
-
-                          ],
+*/
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    ListTile(
-                      title: Text(
-                        userController.userProfile.value.name == ''
-                            ? 'Sign-Up'
-                            : 'Edit-Profile',
-                        style: TextStyle(color: Colors.white),
+                      ListTile(
+                        title: Text(
+                          userController.userProfile.value.name == ''
+                              ? 'Sign-Up'
+                              : 'Edit-Profile',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onTap: () {
+                          Navigator.restorablePush(
+                            context,
+                            RegisterPage.myRouteBuilder,
+                          );
+                        },
                       ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RegisterPage(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
+              ],
             ),
+          ],
+        ),
+      ),
     );
   }
 }

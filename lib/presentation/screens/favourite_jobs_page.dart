@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pacific_kode_practical/core/services/dialog_service.dart';
 import 'package:pacific_kode_practical/core/widgets/custom_scaffold.dart';
 import 'package:pacific_kode_practical/presentation/provider/job_provider.dart';
-import 'package:pacific_kode_practical/presentation/screens/applied_jobs_page.dart';
-import 'package:pacific_kode_practical/presentation/screens/job_list_page.dart';
 import 'package:provider/provider.dart';
 
 class FavouriteJobsPage extends StatefulWidget {

@@ -6,8 +6,14 @@ import 'package:pacific_kode_practical/domain/models/user_Profile.dart';
 
 import 'package:pacific_kode_practical/presentation/getx/user_getx.dart';
 
+@pragma('vm:entry-point')
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
+
+  @pragma('vm:entry-point')
+  static Route<void> myRouteBuilder(BuildContext context, Object? arguments) {
+    return MaterialPageRoute<void>(builder: (context) => const RegisterPage());
+  }
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -17,28 +23,18 @@ class _RegisterPageState extends State<RegisterPage> with RestorationMixin {
   final _formKey = GlobalKey<FormState>();
   final userController = Get.find<UserGetX>();
 
-  RestorableTextEditingController _nameController =
-      RestorableTextEditingController();
-  RestorableTextEditingController _emailController =
-      RestorableTextEditingController();
-  RestorableTextEditingController _ageController =
-      RestorableTextEditingController();
-  RestorableTextEditingController _mobileController =
-      RestorableTextEditingController();
+  final RestorableTextEditingController _nameController =
+      RestorableTextEditingController(text: '');
+  final RestorableTextEditingController _emailController =
+      RestorableTextEditingController(text: '');
+  final RestorableTextEditingController _ageController =
+      RestorableTextEditingController(text: '');
+  final RestorableTextEditingController _mobileController =
+      RestorableTextEditingController(text: '');
 
   @override
   void initState() {
     super.initState();
-
-    final user = userController.userProfile.value;
-    _nameController = RestorableTextEditingController(text: user.name);
-    _emailController = RestorableTextEditingController(text: user.email);
-    _ageController = RestorableTextEditingController(
-      text: user.age == 0 ? '' : user.age.toString(),
-    );
-    _mobileController = RestorableTextEditingController(
-      text: user.mobileNumber,
-    );
   }
 
   @override
@@ -89,6 +85,7 @@ class _RegisterPageState extends State<RegisterPage> with RestorationMixin {
                   keyboardType: TextInputType.number,
                 ),
                 const SizedBox(height: 24),
+
                 ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
@@ -132,11 +129,20 @@ class _RegisterPageState extends State<RegisterPage> with RestorationMixin {
 
   @override
   String? get restorationId => "register_page";
+
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
     registerForRestoration(_nameController, 'name');
     registerForRestoration(_emailController, 'email');
     registerForRestoration(_ageController, 'age');
     registerForRestoration(_mobileController, 'mobile');
+
+    final user = userController.userProfile.value;
+    if (user.name != '') {
+      _nameController.value.text = user.name;
+      _emailController.value.text = user.email;
+      _ageController.value.text = user.age == 0 ? '' : user.age.toString();
+      _mobileController.value.text = user.mobileNumber;
+    }
   }
 }

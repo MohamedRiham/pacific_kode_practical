@@ -50,6 +50,7 @@ class _JobListPageState extends State<JobListPage> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await loadJobs();
     });
@@ -137,6 +138,7 @@ class _JobListPageState extends State<JobListPage> {
                             itemBuilder: (context, index) {
                               final job = jobProvider.filteredJobList[index];
                               return JobCard(
+                                key: ValueKey(job.id),
                                 job: job,
                                 navigation: () {
                                   Navigator.of(context).push(

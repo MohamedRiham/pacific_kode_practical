@@ -22,7 +22,7 @@ class CustomDropdown extends StatelessWidget {
           .map((val) => DropdownMenuItem(value: val, child: Text(val)))
           .toList(),
       hint: Text(hintLabel),
-      value: value != null ? value : null,
+      value: value,
     );
   }
 }
