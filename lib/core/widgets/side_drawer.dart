@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:pacific_kode_practical/presentation/getx/user_getx.dart';
+import 'package:pacific_kode_practical/presentation/get_x/user_get_x.dart';
 import 'package:pacific_kode_practical/presentation/screens/register_page.dart';
 
 class SideDrawer extends StatelessWidget {
@@ -37,7 +37,6 @@ class SideDrawer extends StatelessWidget {
                               ),
                               const SizedBox(height: 8),
 
-                              /*
                               Text(
                                 userController.userProfile.value.name,
                                 style: const TextStyle(
@@ -45,7 +44,7 @@ class SideDrawer extends StatelessWidget {
                                   fontSize: 16.0,
                                 ),
                               ),
-*/
+
                             ],
                           ),
                         ),

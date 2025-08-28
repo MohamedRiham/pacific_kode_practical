@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:pacific_kode_practical/core/widgets/custom_bottom_navigator.dart';
 import 'package:pacific_kode_practical/core/widgets/no_internet.dart';
-import 'package:pacific_kode_practical/presentation/getx/user_getx.dart';
+import 'package:pacific_kode_practical/presentation/get_x/user_get_x.dart';
 import 'package:pacific_kode_practical/presentation/provider/job_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

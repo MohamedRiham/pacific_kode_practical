@@ -4,7 +4,7 @@ import 'package:pacific_kode_practical/core/widgets/custom_scaffold.dart';
 import 'package:pacific_kode_practical/core/widgets/custom_text_field.dart';
 import 'package:pacific_kode_practical/domain/models/user_Profile.dart';
 
-import 'package:pacific_kode_practical/presentation/getx/user_getx.dart';
+import 'package:pacific_kode_practical/presentation/get_x/user_get_x.dart';
 
 @pragma('vm:entry-point')
 class RegisterPage extends StatefulWidget {
